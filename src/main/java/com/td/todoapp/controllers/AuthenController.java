@@ -1,6 +1,6 @@
 package com.td.todoapp.controllers;
 
-import com.td.todoapp.dto.UserDto;
+import com.td.todoapp.models.dto.UserDto;
 import com.td.todoapp.services.servicesImp.AuthenServiceImp;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

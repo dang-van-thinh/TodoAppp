@@ -1,10 +1,12 @@
 package com.td.todoapp.controllers;
 
-import com.td.todoapp.dto.WorkDto;
-import com.td.todoapp.models.Works;
+import com.td.todoapp.entity.Works;
+import com.td.todoapp.models.request.work.UpdateWorkRequest;
+import com.td.todoapp.models.request.work.WorkRequets;
 import com.td.todoapp.services.servicesImp.WorkServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +25,12 @@ public class WorkController {
 
     @GetMapping({"", "/"})
     public ResponseEntity<List<Works>> list() {
-        List works = service.getAll();
+        List<Works> works = service.getAll();
         return ResponseEntity.ok(works);
     }
 
     @PostMapping
-    public ResponseEntity<Object> store(@RequestBody @Valid WorkDto work, BindingResult result) {
+    public ResponseEntity<Object> store(@RequestBody @Valid WorkRequets requets, BindingResult result) {
         if (result.hasErrors()) {
 
             Map<String, String> errors = new HashMap<>();
@@ -38,15 +40,15 @@ public class WorkController {
 
             return ResponseEntity.badRequest().body(errors);
         }
-        Works works = service.create(work);
+        Works works = service.create(requets);
         if (works != null) {
-            return ResponseEntity.ok(works);
+            return ResponseEntity.status(HttpStatus.CREATED).body(works);
         }
         return ResponseEntity.badRequest().body("Thêm công việc không thành coong !");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@Valid @RequestBody WorkDto work,
+    public ResponseEntity<Object> update(@Valid @RequestBody UpdateWorkRequest request,
                                          BindingResult result,
                                          @PathVariable int id) {
         if (result.hasErrors()) {
@@ -58,7 +60,7 @@ public class WorkController {
 
             return ResponseEntity.badRequest().body(errors);
         }
-        Works works = service.update(id, work);
+        Works works = service.update(id, request);
         if (works == null) {
             return ResponseEntity.badRequest().body("Cập nhật không thành công !");
         }
@@ -80,7 +82,7 @@ public class WorkController {
     public ResponseEntity<Object> delete(@PathVariable int id) {
         boolean isDelete = service.delete(id);
         if (isDelete) {
-            return ResponseEntity.ok("Xóa thành công công việc !");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.badRequest().body("Xóa không thành công !");
     }

@@ -1,7 +1,7 @@
 package com.td.todoapp.controllers;
 
-import com.td.todoapp.dto.UserDto;
-import com.td.todoapp.models.Users;
+import com.td.todoapp.entity.Users;
+import com.td.todoapp.models.request.user.UserRequets;
 import com.td.todoapp.services.servicesImp.UserServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class UserController {
     private UserServiceImp service;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid UserDto userDto , BindingResult result){
+    public ResponseEntity<Object> create(@RequestBody @Valid UserRequets requets , BindingResult result){
         if (result.hasErrors()){
             Map errors = new HashMap();
             result.getFieldErrors().forEach((error)->{
@@ -28,7 +28,7 @@ public class UserController {
             });
             return ResponseEntity.badRequest().body(errors);
         }
-        return ResponseEntity.ok(service.create(userDto));
+        return ResponseEntity.ok(service.create(requets));
     }
 
     @GetMapping
@@ -55,7 +55,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable Integer id,
-                                        @RequestBody @Valid UserDto userDto,
+                                        @RequestBody @Valid UserRequets requets,
                                         BindingResult result){
         if (result.hasErrors()){
             Map errors = new HashMap();
@@ -64,7 +64,7 @@ public class UserController {
             });
             return ResponseEntity.badRequest().body(errors);
         }
-        Users user = service.update(id,userDto);
+        Users user = service.update(id,requets);
         if (user != null){
             return ResponseEntity.ok(user);
         }

@@ -1,7 +1,7 @@
 package com.td.todoapp.services.servicesImp;
 
-import com.td.todoapp.dto.UserDto;
-import com.td.todoapp.models.Users;
+import com.td.todoapp.models.dto.UserDto;
+import com.td.todoapp.entity.Users;
 import com.td.todoapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

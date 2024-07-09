@@ -1,7 +1,6 @@
 package com.td.todoapp.repository;
 
-import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
-import com.td.todoapp.models.Works;
+import com.td.todoapp.entity.Works;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

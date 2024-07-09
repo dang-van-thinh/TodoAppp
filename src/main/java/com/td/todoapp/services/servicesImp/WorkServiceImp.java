@@ -1,13 +1,13 @@
 package com.td.todoapp.services.servicesImp;
 
-import com.td.todoapp.dto.WorkDto;
-import com.td.todoapp.models.Works;
+import com.td.todoapp.entity.Works;
+import com.td.todoapp.models.request.work.UpdateWorkRequest;
+import com.td.todoapp.models.request.work.WorkRequets;
 import com.td.todoapp.repository.WorkRepository;
 import com.td.todoapp.services.WorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,19 +16,21 @@ public class WorkServiceImp implements WorkService {
     @Autowired
     private WorkRepository repo;
 
+
+
     @Override
     public List<Works> getAll() {
         return repo.findAll();
     }
 
     @Override
-    public Works create(WorkDto workDto) {
-        boolean isCheck = this.isTimeCorrect(workDto);
+    public Works create(WorkRequets requets) {
+        boolean isCheck = this.isTimeCorrect(requets.getTrangThai(),requets.getNgayBatDau(),requets.getNgayKetThuc());
         if (isCheck) {
-            Works work = new Works(workDto.getTen().toLowerCase(),
-                    workDto.getTrangThai().toUpperCase(),
-                    workDto.getNgayBatDau(),
-                    workDto.getNgayKetThuc());
+            Works work = new Works(requets.getTen().toLowerCase(),
+                    requets.getTrangThai().toUpperCase(),
+                    requets.getNgayBatDau(),
+                    requets.getNgayKetThuc());
             return repo.save(work);
         }
         return null;
@@ -56,14 +58,13 @@ public class WorkServiceImp implements WorkService {
     }
 
     @Override
-    public Works update(Integer id, WorkDto work) {
+    public Works update(Integer id, UpdateWorkRequest request) {
         Works worked = this.getOne(id);
-        boolean isCheck = this.isTimeCorrect(work);
+        boolean isCheck = this.isTimeCorrect(request.getTrangThai(),request.getNgayBatDau(),request.getNgayKetThuc());
         if (worked != null && isCheck) {
-            worked.setTen(work.getTen());
-            worked.setTrangThai(work.getTrangThai());
-            worked.setNgayBatDau(work.getNgayBatDau());
-            worked.setNgayKetThuc(work.getNgayKetThuc());
+            worked.setTrangThai(request.getTrangThai().toUpperCase());
+            worked.setNgayBatDau(request.getNgayBatDau());
+            worked.setNgayKetThuc(request.getNgayKetThuc());
         } else {
             return null;
         }
@@ -88,26 +89,26 @@ public class WorkServiceImp implements WorkService {
         return repo.findByTrangThaiOrTenContaining(key.toUpperCase(), key.toLowerCase());
     }
 
-    public boolean isTimeCorrect(WorkDto work) {
+    public boolean isTimeCorrect(String trangThai,LocalDate ngayBatDau,LocalDate ngayKetThuc) {
         boolean isCheckDate = false;
         LocalDate timeNow = LocalDate.now();
-        
+
         System.out.println(timeNow);
-        if (work.getNgayBatDau().isBefore(work.getNgayKetThuc()) || work.getNgayBatDau().isEqual(work.getNgayKetThuc())) {
-            if ("DOING".equals(work.getTrangThai()) &&
-                    (work.getNgayBatDau().isBefore(timeNow) || work.getNgayBatDau().isEqual(timeNow)) &&
-                    (work.getNgayKetThuc().isAfter(timeNow) || work.getNgayKetThuc().isEqual(timeNow))) {
+        if (ngayBatDau.isBefore(ngayKetThuc) || ngayBatDau.isEqual(ngayKetThuc)) {
+            if ("DOING".equalsIgnoreCase(trangThai) &&
+                    (ngayBatDau.isBefore(timeNow) || ngayBatDau.isEqual(timeNow)) &&
+                    (ngayKetThuc.isAfter(timeNow) || ngayKetThuc.isEqual(timeNow))) {
 
                 isCheckDate = true;
 
-            } else if ("DONE".equals(work.getTrangThai()) &&
-                    (work.getNgayBatDau().isBefore(timeNow) || work.getNgayBatDau().isEqual(timeNow)) &&
-                    (work.getNgayKetThuc().isBefore(timeNow) || work.getNgayKetThuc().isEqual(timeNow))
+            } else if ("DONE".equalsIgnoreCase(trangThai) &&
+                    (ngayBatDau.isBefore(timeNow) || ngayBatDau.isEqual(timeNow)) &&
+                    (ngayKetThuc.isBefore(timeNow) || ngayKetThuc.isEqual(timeNow))
             ) {
 
                 isCheckDate = true;
 
-            } else if ("TODO".equals(work.getTrangThai()) && (work.getNgayBatDau().isAfter(timeNow) && work.getNgayKetThuc().isAfter(timeNow))) {
+            } else if ("TODO".equalsIgnoreCase(trangThai) && (ngayBatDau.isAfter(timeNow) && ngayKetThuc.isAfter(timeNow))) {
 
                 isCheckDate = true;
 

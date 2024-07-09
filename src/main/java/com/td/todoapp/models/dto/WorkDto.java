@@ -1,4 +1,4 @@
-package com.td.todoapp.dto;
+package com.td.todoapp.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;

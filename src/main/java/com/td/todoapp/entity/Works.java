@@ -1,4 +1,4 @@
-package com.td.todoapp.models;
+package com.td.todoapp.entity;
 
 import jakarta.persistence.*;
 

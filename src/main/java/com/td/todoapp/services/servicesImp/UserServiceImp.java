@@ -1,7 +1,6 @@
 package com.td.todoapp.services.servicesImp;
-
-import com.td.todoapp.dto.UserDto;
-import com.td.todoapp.models.Users;
+import com.td.todoapp.entity.Users;
+import com.td.todoapp.models.request.user.UserRequets;
 import com.td.todoapp.repository.UserRepository;
 import com.td.todoapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +16,11 @@ public class UserServiceImp implements UserService {
     private UserRepository repo;
 
     @Override
-    public Users create(UserDto userDto) {
+    public Users create(UserRequets requets) {
         Users user = new Users();
         PasswordEncoder encoder = new BCryptPasswordEncoder(10);
-        user.setPassword(encoder.encode(userDto.getPassword()));
-        user.setName(userDto.getName());
+        user.setPassword(encoder.encode(requets.getPassword()));
+        user.setName(requets.getName());
         return repo.save(user);
     }
 
@@ -52,12 +51,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Users update(Integer id, UserDto userDto) {
+    public Users update(Integer id, UserRequets requets) {
         PasswordEncoder encoder = new BCryptPasswordEncoder(10);
         Users usered = this.getOne(id);
         if (usered!= null){
-            usered.setName(userDto.getName());
-            usered.setPassword(encoder.encode(userDto.getPassword()));
+            usered.setName(requets.getName());
+            usered.setPassword(encoder.encode(requets.getPassword()));
             return usered;
         }
         return null;
