@@ -14,15 +14,15 @@ public class WorkDto {
     @NotEmpty(message = "Không được để trống tên !")
     private String ten;
     @NotNull(message = "Không được để trống trạng thái !")
-    private Short trangThai;
+    private String trangThai;
     @NotNull(message = "Không được để trống ngày bắt đầu !")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Ho_Chi_minh")
-    private LocalDateTime ngayBatDau;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate ngayBatDau;
     @NotNull(message = "Không được để trống ngày kết thúc !")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Ho_Chi_minh")
-    private LocalDateTime ngayKetThuc;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate ngayKetThuc;
 
     public String getTen() {
         return ten;
@@ -32,27 +32,27 @@ public class WorkDto {
         this.ten = ten;
     }
 
-    public Short getTrangThai() {
+    public String getTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(Short trangThai) {
+    public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
 
-    public LocalDateTime getNgayBatDau() {
+    public LocalDate getNgayBatDau() {
         return ngayBatDau;
     }
 
-    public void setNgayBatDau(LocalDateTime ngayBatDau) {
+    public void setNgayBatDau(LocalDate ngayBatDau) {
         this.ngayBatDau = ngayBatDau;
     }
 
-    public LocalDateTime getNgayKetThuc() {
+    public LocalDate getNgayKetThuc() {
         return ngayKetThuc;
     }
 
-    public void setNgayKetThuc(LocalDateTime ngayKetThuc) {
+    public void setNgayKetThuc(LocalDate ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
 }

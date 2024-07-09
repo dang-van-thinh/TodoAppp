@@ -2,26 +2,23 @@ package com.td.todoapp.controllers;
 
 import com.td.todoapp.dto.WorkDto;
 import com.td.todoapp.models.Works;
-import com.td.todoapp.repository.WorkRepository;
-import com.td.todoapp.services.WorkService;
+import com.td.todoapp.services.servicesImp.WorkServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/works")
 public class WorkController {
     @Autowired
-    private WorkService service;
+    private WorkServiceImp service;
 
 
     @GetMapping({"", "/"})
@@ -41,9 +38,9 @@ public class WorkController {
 
             return ResponseEntity.badRequest().body(errors);
         }
-        Works works = service.store(work);
+        Works works = service.create(work);
         if (works != null) {
-            return ResponseEntity.ok(service.store(work));
+            return ResponseEntity.ok(works);
         }
         return ResponseEntity.badRequest().body("Thêm công việc không thành coong !");
     }
@@ -89,16 +86,20 @@ public class WorkController {
     }
 
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Works>> search(@RequestParam(name = "key", required = false) String ten,
-                                              @RequestParam(name = "status", required = false) Short status,
-                                              @RequestParam(name = "ngayB", required = false, defaultValue = "") String ngayB,
-                                              @RequestParam(name = "ngayK", required = false, defaultValue = "") String ngayK
+    @GetMapping("/filter")
+    public ResponseEntity<List<Works>> filter(@RequestParam(name = "key", required = false) String ten,
+                                              @RequestParam(name = "status", required = false) String status,
+                                              @RequestParam(name = "start", required = false) LocalDate start,
+                                              @RequestParam(name = "end", required = false) LocalDate end
     ) {
+        return ResponseEntity.ok(service.filter(ten,status,start,end));
+    }
 
-        LocalDateTime ngayS = LocalDateTime.parse(ngayB);
-        LocalDateTime ngayE = LocalDateTime.parse(ngayK);
-        return ResponseEntity.ok(service.search(ngayS, ngayE, status, ten));
+    @GetMapping("/search")
+    public ResponseEntity<List<Works>> search(@RequestParam(name = "key", required = false) String ten
+//                                              @RequestParam(name = "status", required = false) Short status
+    ) {
+        return ResponseEntity.ok(service.search(ten));
     }
 
 

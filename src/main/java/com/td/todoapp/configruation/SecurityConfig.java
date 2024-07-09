@@ -10,9 +10,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_PATH_GET = {"/works",
+    private final String[] PUBLIC_PATH_GET = {"/works","/works/search",
             "/users", "/users/{id}"};
-    private final String[] PUBLIC_PATH_POST = {"/works", "/users"};
+    private final String[] PUBLIC_PATH_POST = {"/works", "/users","/auth/login"};
     private final String[] PUBLIC_PATH_DELETE = {"/users/{id}"};
     private final String[] PUBLIC_PATH_PUT = {"/users/{id}"};
 
@@ -23,10 +23,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_PATH_POST).permitAll()
                         .requestMatchers(HttpMethod.DELETE,PUBLIC_PATH_DELETE).permitAll()
                         .requestMatchers(HttpMethod.PUT,PUBLIC_PATH_PUT).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
         );
 
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable()); // csrf dùng cho chống tấn công giả mạo
+        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable()); // csrf dùng cho chống tấn công giả mạo --> đây là đang tắt csrf (mặc định là nó được tự động bật)
         return http.build();
     }
 

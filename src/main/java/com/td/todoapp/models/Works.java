@@ -12,11 +12,11 @@ public class Works {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String ten;
-    private short trangThai;
-    private LocalDateTime ngayBatDau;
-    private LocalDateTime ngayKetThuc;
+    private String trangThai;
+    private LocalDate ngayBatDau;
+    private LocalDate ngayKetThuc;
 
-    public Works(String ten, short trangThai, LocalDateTime ngayBatDau, LocalDateTime ngayKetThuc) {
+    public Works(String ten, String trangThai, LocalDate ngayBatDau, LocalDate ngayKetThuc) {
         this.ten = ten;
         this.trangThai = trangThai;
         this.ngayBatDau = ngayBatDau;
@@ -42,27 +42,27 @@ public class Works {
         this.ten = ten;
     }
 
-    public short getTrangThai() {
+    public String getTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(short trangThai) {
+    public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
 
-    public LocalDateTime getNgayBatDau() {
+    public LocalDate getNgayBatDau() {
         return ngayBatDau;
     }
 
-    public void setNgayBatDau(LocalDateTime ngayBatDau) {
+    public void setNgayBatDau(LocalDate ngayBatDau) {
         this.ngayBatDau = ngayBatDau;
     }
 
-    public LocalDateTime getNgayKetThuc() {
+    public LocalDate getNgayKetThuc() {
         return ngayKetThuc;
     }
 
-    public void setNgayKetThuc(LocalDateTime ngayKetThuc) {
+    public void setNgayKetThuc(LocalDate ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
 }

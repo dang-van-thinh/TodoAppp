@@ -2,7 +2,7 @@ package com.td.todoapp.controllers;
 
 import com.td.todoapp.dto.UserDto;
 import com.td.todoapp.models.Users;
-import com.td.todoapp.services.UserService;
+import com.td.todoapp.services.servicesImp.UserServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    private UserService service;
+    private UserServiceImp service;
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody @Valid UserDto userDto , BindingResult result){
