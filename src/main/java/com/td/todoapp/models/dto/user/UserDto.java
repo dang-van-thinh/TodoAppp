@@ -1,12 +1,10 @@
-package com.td.todoapp.models.dto;
+package com.td.todoapp.models.dto.user;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public class UserDto {
-    @NotEmpty(message = "Không để trống trường tên !")
     private String name;
-    @NotEmpty(message = "Không để trống trường password !")
     private String password;
 
     public String getName() {

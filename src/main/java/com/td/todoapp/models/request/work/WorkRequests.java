@@ -1,16 +1,13 @@
-package com.td.todoapp.models.dto;
+package com.td.todoapp.models.request.work;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public class WorkDto {
+public class WorkRequests {
     @NotEmpty(message = "Không được để trống tên !")
     private String ten;
     @NotNull(message = "Không được để trống trạng thái !")
@@ -23,6 +20,16 @@ public class WorkDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate ngayKetThuc;
+
+    private Integer userId;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getTen() {
         return ten;

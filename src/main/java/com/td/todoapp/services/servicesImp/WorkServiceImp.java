@@ -1,96 +1,112 @@
 package com.td.todoapp.services.servicesImp;
 
+import com.td.todoapp.entity.Users;
 import com.td.todoapp.entity.Works;
+import com.td.todoapp.models.dto.user.UserDto;
+import com.td.todoapp.models.dto.work.WorkDto;
+import com.td.todoapp.models.dto.work.WorkWithUserDto;
 import com.td.todoapp.models.request.work.UpdateWorkRequest;
-import com.td.todoapp.models.request.work.WorkRequets;
+import com.td.todoapp.models.request.work.WorkRequests;
 import com.td.todoapp.repository.WorkRepository;
+import com.td.todoapp.repository.specification.WorkSpecification;
 import com.td.todoapp.services.WorkService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class WorkServiceImp implements WorkService {
+
+    private static final Logger logger = LoggerFactory.getLogger(WorkServiceImp.class);
     @Autowired
     private WorkRepository repo;
 
-
+    @Autowired
+    private UserServiceImp userService;
 
     @Override
     public List<Works> getAll() {
+
         return repo.findAll();
     }
 
     @Override
-    public Works create(WorkRequets requets) {
-        boolean isCheck = this.isTimeCorrect(requets.getTrangThai(),requets.getNgayBatDau(),requets.getNgayKetThuc());
+    public Works create(WorkRequests requests) {
+        boolean isCheck = this.isTimeCorrect(requests.getTrangThai(), requests.getNgayBatDau(), requests.getNgayKetThuc());
+        Works work = new Works();
+
         if (isCheck) {
-            Works work = new Works(requets.getTen().toLowerCase(),
-                    requets.getTrangThai().toUpperCase(),
-                    requets.getNgayBatDau(),
-                    requets.getNgayKetThuc());
+            System.out.println("id user:" + requests.getUserId());
+            Optional<Users> usered = userService.getOne(requests.getUserId());
+            System.out.println("User: " + usered.isPresent());
+            if (usered.isPresent()) {
+                work.setUsers(usered.get());
+            }
+            System.out.println(usered);
+            work.setTen(requests.getTen());
+            work.setTrangThai(requests.getTrangThai());
+            work.setNgayKetThuc(requests.getNgayKetThuc());
+            work.setNgayBatDau(requests.getNgayBatDau());
             return repo.save(work);
+
         }
         return null;
     }
 
     @Override
     public boolean delete(Integer id) {
-        Works work = this.getOne(id);
-        if (work != null) {
-            repo.delete(work);
+        Optional<Works> work = this.getOne(id);
+        if (work.isPresent()) {
+            repo.delete(work.get());
             return true;
         }
         return false;
     }
 
     @Override
-    public Works getOne(Integer id) {
-        try {
-            Works work = repo.findById(id).get();
-            return work;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    public Optional<Works> getOne(Integer id) {
+        Optional<Works> works = repo.findById(id);
+        System.out.println(works.isPresent());
+        return works;
     }
 
     @Override
     public Works update(Integer id, UpdateWorkRequest request) {
-        Works worked = this.getOne(id);
-        boolean isCheck = this.isTimeCorrect(request.getTrangThai(),request.getNgayBatDau(),request.getNgayKetThuc());
+        Optional<Works> worked = this.getOne(id);
+        boolean isCheck = this.isTimeCorrect(request.getTrangThai(), request.getNgayBatDau(), request.getNgayKetThuc());
         if (worked != null && isCheck) {
-            worked.setTrangThai(request.getTrangThai().toUpperCase());
-            worked.setNgayBatDau(request.getNgayBatDau());
-            worked.setNgayKetThuc(request.getNgayKetThuc());
+            worked.get().setTrangThai(request.getTrangThai().toUpperCase());
+            worked.get().setNgayBatDau(request.getNgayBatDau());
+            worked.get().setNgayKetThuc(request.getNgayKetThuc());
         } else {
             return null;
         }
-        return repo.save(worked);
+        return repo.save(worked.get());
     }
 
 
-    public List<Works> filter(String ten, String status, LocalDate ngayBatDau, LocalDate ngayKetThuc) {
-        try {
+    public List<Works> filter(String ten, String status, LocalDate start, LocalDate end) {
 
-            if (ten == null && status == null) {
-                return repo.findByNgayKetThucBetween(ngayBatDau, ngayKetThuc);
-            }
-            return repo.findByNgayBatDauBetweenAndTrangThaiStartingWithAndTenContaining(ngayBatDau, ngayKetThuc, status.toUpperCase(), ten.toLowerCase());
-        } catch (Exception ex) {
-            return null;
-        }
+        Specification<Works> specification = WorkSpecification.findByWorks(ten, status, start, end);
+        return repo.findAll(specification);
     }
+
 
     @Override
     public List<Works> search(String key) {
-        return repo.findByTrangThaiOrTenContaining(key.toUpperCase(), key.toLowerCase());
+        Specification<Works> search = WorkSpecification.findByTenOrTrangThaiOrId(key);
+        return repo.findAll(search);
     }
 
-    public boolean isTimeCorrect(String trangThai,LocalDate ngayBatDau,LocalDate ngayKetThuc) {
+
+    public boolean isTimeCorrect(String trangThai, LocalDate ngayBatDau, LocalDate ngayKetThuc) {
         boolean isCheckDate = false;
+
         LocalDate timeNow = LocalDate.now();
 
         System.out.println(timeNow);
@@ -118,4 +134,32 @@ public class WorkServiceImp implements WorkService {
         return isCheckDate;
     }
 
+    @Override
+    public WorkWithUserDto getWorkWithUser(String name) {
+
+        List<Works> worksList = repo.findAll(WorkSpecification.findWorksByUserName(name));
+        if (worksList.size() != 0) {
+           logger.info("service work : " + worksList.toString());
+            UserDto userDto = new UserDto();
+            List<WorkDto> workDtos = new ArrayList<>();
+
+            Users usered = worksList.get(0).getUsers();
+
+            userDto.setName(usered.getName());
+            userDto.setPassword(usered.getPassword());
+
+            for (Works work : worksList) {
+                WorkDto workDto = new WorkDto();
+
+                workDto.setTen(work.getTen());
+                workDto.setTrangThai(work.getTrangThai());
+                workDto.setNgayBatDau(work.getNgayBatDau());
+                workDto.setNgayKetThuc(work.getNgayKetThuc());
+
+                workDtos.add(workDto);
+            }
+            return new WorkWithUserDto(userDto, workDtos);
+        }
+        return null;
+    }
 }

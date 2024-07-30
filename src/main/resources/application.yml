@@ -13,3 +13,6 @@ spring:
       ddl-auto: update
     show-sql: true
     database: postgresql
+
+
+jwt.serectKey : eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyMTM3NTk5NiwiaWF0IjoxNzIxMzc1OTk2fQ.JsUn5SDaWcLDzXwfFJwCQ0mPZ0lPp-fuIbB08qMUPZA

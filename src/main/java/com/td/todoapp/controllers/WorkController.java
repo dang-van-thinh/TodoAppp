@@ -1,8 +1,10 @@
 package com.td.todoapp.controllers;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.td.todoapp.entity.Works;
+import com.td.todoapp.models.dto.work.WorkWithUserDto;
 import com.td.todoapp.models.request.work.UpdateWorkRequest;
-import com.td.todoapp.models.request.work.WorkRequets;
+import com.td.todoapp.models.request.work.WorkRequests;
 import com.td.todoapp.services.servicesImp.WorkServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +17,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/works")
 public class WorkController {
+
     @Autowired
     private WorkServiceImp service;
-
 
     @GetMapping({"", "/"})
     public ResponseEntity<List<Works>> list() {
@@ -29,8 +32,10 @@ public class WorkController {
         return ResponseEntity.ok(works);
     }
 
+
+
     @PostMapping
-    public ResponseEntity<Object> store(@RequestBody @Valid WorkRequets requets, BindingResult result) {
+    public ResponseEntity<Object> store(@RequestBody @Valid WorkRequests requets, BindingResult result) {
         if (result.hasErrors()) {
 
             Map<String, String> errors = new HashMap<>();
@@ -69,12 +74,12 @@ public class WorkController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findOne(@PathVariable int id) {
-        Works works = service.getOne(id);
-        if (works == null) {
+    public ResponseEntity<?> findOne(@PathVariable int id) {
+        Optional<Works> works = service.getOne(id);
+        if (works.isEmpty()) {
             return ResponseEntity.badRequest().body("Không tìm thấy công việc phù hợp nào !");
         }
-        return ResponseEntity.ok(works);
+        return ResponseEntity.ok(works.get());
     }
 
 
@@ -91,15 +96,16 @@ public class WorkController {
     @GetMapping("/filter")
     public ResponseEntity<List<Works>> filter(@RequestParam(name = "key", required = false) String ten,
                                               @RequestParam(name = "status", required = false) String status,
-                                              @RequestParam(name = "start", required = false) LocalDate start,
-                                              @RequestParam(name = "end", required = false) LocalDate end
+                                              @RequestParam(name = "start", required = false) @JsonFormat(pattern="yyyy-MM-dd") LocalDate start,
+                                              @RequestParam(name = "end", required = false) @JsonFormat(pattern="yyyy-MM-dd") LocalDate end
     ) {
+        System.out.println(start);
+        System.out.println(end);
         return ResponseEntity.ok(service.filter(ten,status,start,end));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<Works>> search(@RequestParam(name = "key", required = false) String ten
-//                                              @RequestParam(name = "status", required = false) Short status
     ) {
         return ResponseEntity.ok(service.search(ten));
     }

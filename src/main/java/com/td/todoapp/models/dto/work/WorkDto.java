@@ -1,24 +1,19 @@
-package com.td.todoapp.models.request.work;
+package com.td.todoapp.models.dto.work;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public class WorkRequets {
-    @NotEmpty(message = "Không được để trống tên !")
+public class WorkDto {
     private String ten;
-    @NotNull(message = "Không được để trống trạng thái !")
     private String trangThai;
-    @NotNull(message = "Không được để trống ngày bắt đầu !")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate ngayBatDau;
-    @NotNull(message = "Không được để trống ngày kết thúc !")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate ngayKetThuc;
 
     public String getTen() {

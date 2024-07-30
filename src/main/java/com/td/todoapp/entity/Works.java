@@ -1,9 +1,7 @@
 package com.td.todoapp.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "works")
@@ -15,15 +13,40 @@ public class Works {
     private String trangThai;
     private LocalDate ngayBatDau;
     private LocalDate ngayKetThuc;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users users;
 
-    public Works(String ten, String trangThai, LocalDate ngayBatDau, LocalDate ngayKetThuc) {
+    public Works(String ten, String trangThai, LocalDate ngayBatDau, LocalDate ngayKetThuc , Users user) {
         this.ten = ten;
         this.trangThai = trangThai;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
+        this.users = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Works{" +
+                "id=" + id +
+                ", ten='" + ten + '\'' +
+                ", trangThai='" + trangThai + '\'' +
+                ", ngayBatDau=" + ngayBatDau +
+                ", ngayKetThuc=" + ngayKetThuc +
+                ", username=" + users.getName() +
+                ", role=" + users.getRole() +
+                '}';
     }
 
     public Works() {
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     public int getId() {
